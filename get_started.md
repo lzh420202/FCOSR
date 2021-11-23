@@ -121,4 +121,6 @@ Speed
 
 ### Transfer to onnx and TensorRT
 
-comming soon
+comming soon<br>
+
+The TensorRT inference implement can be found in my other [repository](https://github.com/lzh420202/FCOSR_TensorRT_Inference)
