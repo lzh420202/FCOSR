@@ -3,16 +3,18 @@
 You can create runtime based on docker. We will provide a dockerfile to help you, just wait. Now, you can build FCOSR on your device through following steps.
 
 ## Recommend system environments:
- - Ubuntu 16.04/18.04/20.04
+ - Ubuntu 18.04/20.04
  - python 3.7
- - cuda 10.0 or 10.1
- - pytorch 1.3.1
- - torchvision 0.4.2
+ - cuda 10.0/10.1/10.2
+ - cudnn 8.2 (optional, required for TensorRT deployment)
+ - TensorRT 8.0 GA (8.0.1, optional)
+ - pytorch 1.3.1/1.5.1
+ - torchvision 0.4.2/0.6.1
  - mmdetection 2.15.1
  - mmcv-full 1.3.9
  - DOTA_devkit and shapely
 
-**Note:** pytorch->onnx require torch>=1.5.1, but We haven't trained FCOSR in this version. We are expecting someone to use FCOSR in the higher version of pytorch. Unfortunately, the CUDA components we designed in the cuda11 version are not working effectively.
+**Note:** pytorch->onnx require torch>=1.5.1. Unfortunately, the CUDA components we designed in the cuda11 version are not working effectively.
 
 ## Install FCOSR
 
