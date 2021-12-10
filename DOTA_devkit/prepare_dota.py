@@ -31,8 +31,8 @@ def print_arg(args):
     print(f"Gaps: {args.gap}")
     print(f"Data type: {args.type}")
     print(f"Processor number: {args.processor}")
-    if scales.scales:
-        print(f"Multi scales: {', '.join([str(scale) for scale in scales.scales])}")
+    if args.scales:
+        print(f"Multi scales: {', '.join([str(scale) for scale in args.scales])}")
     else:
         print("Multi scale: False")
     print(f"{''.join(['-'] * print_n)}")
