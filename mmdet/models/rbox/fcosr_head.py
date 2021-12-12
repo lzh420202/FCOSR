@@ -122,7 +122,7 @@ class FCOSRboxHead(BaseModule):
         self._init_layers()
 
         # if torch.onnx.is_in_onnx_export():
-        self.points = self.get_points_onnx([image_size[1], image_size[0]], torch.float32)
+        # self.points = self.get_points_onnx([image_size[1], image_size[0]], torch.float32)
 
     def _init_layers(self):
         self.cls_convs = nn.ModuleList()
