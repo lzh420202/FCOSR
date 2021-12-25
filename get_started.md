@@ -121,6 +121,13 @@ Speed
 
 ### Transfer to onnx and TensorRT
 
-comming soon<br>
+transfer path: checkpoint(.pth) -> onnx format(.onnx) -> tensorrt engine(.trt)
+
+```shell
+# checkpoint(.pth) -> onnx format(.onnx)
+python tools/deployment/pytorch2onnx.py config_file checkpoint_file --output-file output_path --shape 1024 1024
+```
+
+onnx -> tensorrt ([onnx-tensorrt 8.0](https://github.com/onnx/onnx-tensorrt/tree/release/8.0))
 
 The TensorRT inference implement can be found in my other [repository](https://github.com/lzh420202/FCOSR_TensorRT_Inference)

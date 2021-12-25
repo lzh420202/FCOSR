@@ -938,3 +938,96 @@ class FCOSRboxHead(BaseModule):
             return fcosr_tools.poly_cut_v2(polys, image_size, keep_threshold)
         else:
             raise ValueError(f"Unsupport function version:{version}")
+
+    def vector2bbox_onnx(self, points, box_preds):
+        # box_preds + torch.constant_pad_nd(points, [0, 3])
+        pad_points = torch.cat([points, torch.zeros([points.shape[0], 3], dtype=torch.float32, device=points.device)], dim=1)
+        return box_preds + pad_points
+
+    def get_points_onnx(self, image_shape, dtype, device):
+        mlvl_points = []
+        for i in range(len(self.strides)):
+            points = self.get_points_onnx_single(image_shape, self.strides[i], dtype, device)
+            mlvl_points.append(points)
+        return mlvl_points
+
+    def get_points_onnx_single(self, image_shape, stride, dtype, device):
+        x_range = torch.arange(0, image_shape[1], stride, dtype=dtype, device=device)
+        y_range = torch.arange(0, image_shape[0], stride, dtype=dtype, device=device)
+
+        y, x = torch.meshgrid(y_range, x_range)
+        points = torch.stack((x.reshape(-1).float(), y.reshape(-1).float()), dim=-1) + stride * 0.5
+        return points
+
+    def forward_onnx(self, feats):
+        return multi_apply(self.forward_onnx_single, feats, self.scales, self.strides)
+
+    def forward_onnx_single(self, x, scale, stride):
+        cls_feat = x
+        reg_feat = x
+
+        for cls_layer in self.cls_convs:
+            cls_feat = cls_layer(cls_feat)
+        cls_score = self.fcos_cls(cls_feat)
+
+        for reg_layer in self.reg_convs:
+            reg_feat = reg_layer(reg_feat)
+        # scale the rbox_pred of different level
+        rbox_pred_xy = scale(self.fcos_xy_reg(reg_feat)) * stride
+        rbox_pred_wh = (F.elu(scale(self.fcos_wh_reg(reg_feat))) + 1.0) * stride
+        # rbox_pred_angle = self.fcos_angle_reg(reg_feat).fmod(self.half_pi)
+        # rbox_pred_angle = self.fcos_angle_reg(reg_feat)
+        rbox_pred_angle = fmod(self.fcos_angle_reg(reg_feat), self.half_pi)
+        rbox_pred = torch.cat([rbox_pred_xy, rbox_pred_wh, rbox_pred_angle], 1)
+
+        return cls_score, rbox_pred
+
+    def get_rbboxes_onnx(self,
+                   cls_scores,
+                   bbox_preds,
+                   img_metas,
+                   cfg):
+        assert len(cls_scores) == len(bbox_preds)
+        num_levels = len(cls_scores)
+        mlvl_points = self.get_points_onnx(img_metas[0]['img_shape'], torch.float32, bbox_preds[0].device)
+        box_lists = []
+        label_lists = []
+        for img_id in range(len(img_metas)):
+            cls_score_list = [cls_scores[i][img_id].detach() for i in range(num_levels)]
+            rbbox_pred_list = [bbox_preds[i][img_id].detach() for i in range(num_levels)]
+            det_rbboxes, det_labels = self.get_rbboxes_onnx_single(cls_score_list, rbbox_pred_list, mlvl_points, cfg)
+            box_lists.append(det_rbboxes)
+            label_lists.append(det_labels)
+
+        return torch.stack(box_lists), torch.stack(label_lists)
+
+    def get_rbboxes_onnx_single(self,
+                           cls_scores,
+                           rbbox_preds,
+                           mlvl_points,
+                           cfg):
+        # assert len(cls_scores) == len(rbbox_preds) == len(mlvl_points)
+        mlvl_rbboxes = []
+        mlvl_scores = []
+        for cls_score, rbbox_pred, points in zip(
+                cls_scores, rbbox_preds, mlvl_points):
+            # assert cls_score.size()[-2:] == rbbox_pred.size()[-2:]
+            scores = cls_score.permute(1, 2, 0).reshape(-1, self.cls_out_channels).sigmoid()
+            rbbox_pred = rbbox_pred.permute(1, 2, 0).reshape(-1, 5)
+            nms_pre = cfg.get('nms_pre', -1)
+            if nms_pre > 0 and scores.shape[0] > nms_pre:
+                # TODO 2
+                max_scores, _ = scores.max(dim=1)
+                _, topk_inds = max_scores.topk(nms_pre)
+                points = points[topk_inds, :]
+                rbbox_pred = rbbox_pred[topk_inds, :]
+                scores = scores[topk_inds, :]
+            # TODO 1
+            rbboxes = self.vector2bbox_onnx(points, rbbox_pred)
+            # bboxes = distance2bbox(points, rbbox_pred, max_shape=img_shape)
+            mlvl_rbboxes.append(obbox2corners(rbboxes))
+            # mlvl_rbboxes.append(rbboxes)
+            mlvl_scores.append(scores)
+        mlvl_rbboxes = torch.cat(mlvl_rbboxes)
+        mlvl_scores = torch.cat(mlvl_scores)
+        return mlvl_rbboxes, mlvl_scores

@@ -126,3 +126,27 @@ class FCOSR(BaseDetector):
 
     def aug_test(self, imgs, img_metas, rescale=None):
         raise NotImplementedError
+
+    def onnx_export(self, img, img_metas):
+        """Test function without nms.
+
+                Args:
+                    img (torch.Tensor): input images.
+                    img_metas (list[dict]): List of image information.
+
+                Returns:
+                    tuple[Tensor, Tensor]: dets of shape [N, num_det, 5]
+                        and class labels of shape [N, num_det, class].
+                """
+        x = self.extract_feat(img)
+        outs = self.rbbox_head.forward_onnx(x)
+        img_shape = torch._shape_as_tensor(img)[2:]
+        img_metas[0]['img_shape_for_onnx'] = img_shape
+        # get pad input shape to support onnx dynamic shape for exporting
+        # `CornerNet` and `CentripetalNet`, which 'pad_shape' is used
+        # for inference
+        img_metas[0]['pad_shape_for_onnx'] = img_shape
+        bbox_inputs = outs + (img_metas, self.test_cfg)
+        det_bboxes, det_labels = self.rbbox_head.get_rbboxes_onnx(*bbox_inputs)
+
+        return det_bboxes, det_labels

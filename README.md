@@ -16,6 +16,9 @@ The program could not work effectively when we migrate it to cuda 11 (only suppo
 By applying CUDA expansion, the memory utilization is improved and a lot of unnecessary calculations are reduced.
 We also try to train FCOSR-M on 2080ti (4 images per device), which can basically fill memory of graphics card.
 
+FCOSR TensorRT inference code is available at: [https://github.com/lzh420202/FCOSR_TensorRT_Inference]()<br>
+祝大家12月26日,"圣诞快乐".
+
 ## Install
 
 Please refer to [install.md](./install.md) for installation and dataset preparation.
@@ -85,5 +88,46 @@ Details (Test device: nvidia RTX 2080ti)
 
 |Model|backbone|Head channels|Sched.|Param|Size|Input|GFLOPs|FPS|mAP|onnx|TensorRT|
 |:-|:-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|FCOSR-lite|Mobilenet v2|256|3x|6.9M|51.63MB|1024×1024|101.25|7.64|74.30|Wait|[rtr](https://pan.baidu.com/s/1Bhg3hfJJlc2-iJBPi79zFA)|
-|FCOSR-tiny|Mobilenet v2|128|3x|3.52M|23.2MB|1024×1024|35.89|10.68|73.93|Wait|[rtr](https://pan.baidu.com/s/1WPLV7xjXkMLSes5Jf8cFgw)|
+|FCOSR-lite|Mobilenet v2|256|3x|6.9M|51.63MB|1024×1024|101.25|7.64|74.30|[onnx](https://pan.baidu.com/s/1jsNzc_ivr0THC9EWhw2Bkw)|[trt](https://pan.baidu.com/s/1Bhg3hfJJlc2-iJBPi79zFA)|
+|FCOSR-tiny|Mobilenet v2|128|3x|3.52M|23.2MB|1024×1024|35.89|10.68|73.93|[onnx](https://pan.baidu.com/s/1m_QUYhStewEB-dpPYA0igA)|[trt](https://pan.baidu.com/s/1WPLV7xjXkMLSes5Jf8cFgw)|
+
+### Lightweight FCOSR test result on Jetson AGX Xavier (DOTA 1.0 single-scale).
+
+A part of Dota1.0 dataset (whole image mode) [**Code**](https://github.com/lzh420202/FCOSR_TensorRT_Inference)
+
+|name|size|patch size|gap|patches|det objects|det time(s)|
+|-|-|-|-|-|-|-|
+|P0031.png|5343×3795|1024|200|35|1197|2.75|
+|P0051.png|4672×5430|1024|200|42|309|2.38|
+|P0112.png|6989×4516|1024|200|54|184|3.02|
+|P0137.png|5276×4308|1024|200|35|66|1.95|
+|P1004.png|7001×3907|1024|200|45|183|2.52|
+|P1125.png|7582×4333|1024|200|54|28|2.95|
+|P1129.png|4093×6529|1024|200|40|70|2.23|
+|P1146.png|5231×4616|1024|200|42|64|2.29|
+|P1157.png|7278×5286|1024|200|63|184|3.47|
+|P1378.png|5445×4561|1024|200|42|83|2.32|
+|P1379.png|4426×4182|1024|200|30|686|1.78|
+|P1393.png|6072×6540|1024|200|64|893|3.63|
+|P1400.png|6471×4479|1024|200|48|348|2.63|
+|P1402.png|4112×4793|1024|200|30|293|1.68|
+|P1406.png|6531×4182|1024|200|40|19|2.19|
+|P1415.png|4894x4898|1024|200|36|190|1.99|
+|P1436.png|5136×5156|1024|200|42|39|2.31|
+|P1448.png|7242×5678|1024|200|63|51|3.41|
+|P1457.png|5193×4658|1024|200|42|382|2.33|
+|P1461.png|6661×6308|1024|200|64|27|3.45|
+|P1494.png|4782×6677|1024|200|48|70|2.61|
+|P1500.png|4769×4386|1024|200|36|92|1.96|
+|P1772.png|5963×5553|1024|200|49|28|2.70|
+|P1774.png|5352×4281|1024|200|35|291|1.95|
+|P1796.png|5870×5822|1024|200|49|308|2.74|
+|P1870.png|5942×6059|1024|200|56|135|3.04|
+|P2043.png|4165×3438|1024|200|20|1479|1.49|
+|P2329.png|7950×4334|1024|200|60|83|3.26|
+|P2641.png|7574×5625|1024|200|63|269|3.41|
+|P2642.png|7039×5551|1024|200|63|451|3.50|
+|P2643.png|7568×5619|1024|200|63|249|3.40|
+|P2645.png|4605×3442|1024|200|24|357|1.42|
+|P2762.png|8074×4359|1024|200|60|127|3.23|
+|P2795.png|4495×3981|1024|200|30|65|1.64|
