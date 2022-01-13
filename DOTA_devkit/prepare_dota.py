@@ -4,8 +4,10 @@ from ImgSplit_multi_process import splitbase
 from SplitOnlyImage_multi_process import splitbase as split_img
 import shutil
 from multiprocessing import Pool
-from DOTA2COCO import DOTA2COCO_ANNO, DOTA2COCO_ONLYIMG, wordname_15, wordname_16, wordname_18
+from DOTA2COCO import (DOTA2COCO_ANNO, DOTA2COCO_ONLYIMG, wordname_15, wordname_16, wordname_18)
+from DOTA2COCO_multi_process import (DOTA2COCO_ANNO_MULTI, DOTA2COCO_ONLYIMG_MULTI)
 import argparse
+USE_MULTI_PROCESS = False
 
 
 def parse_args():
@@ -104,16 +106,16 @@ def prepare_single_scale(srcpath, dstpath, subsize=1024, gap=200, data_type='dot
 
     split_train = splitbase(src_train_folder, dst_train_folder, gap=gap,
                             subsize=subsize, num_process=num_process, drop_thresh=drop_thre)
-    split_train.splitdata(1)
+    split_train.splitdata(1.0)
 
     split_val = splitbase(src_val_folder, dst_train_folder, gap=gap,
                           subsize=subsize, num_process=num_process, drop_thresh=drop_thre)
-    split_val.splitdata(1)
+    split_val.splitdata(1.0)
 
     split_test = split_img(os.path.join(src_test_folder, 'images'),
                            os.path.join(dst_test_folder, 'images'),
                            gap=gap, subsize=subsize, num_process=num_process)
-    split_test.splitdata(1)
+    split_test.splitdata(1.0)
     if data_type == 'dota10':
         class_name = wordname_15
         filename = '1_0'
@@ -126,9 +128,15 @@ def prepare_single_scale(srcpath, dstpath, subsize=1024, gap=200, data_type='dot
     else:
         raise ValueError
     print('Processing train data.')
-    DOTA2COCO_ANNO(dst_train_folder, os.path.join(dst_train_folder, f'DOTA{filename}_trainval{subsize}.json'), class_name, difficult='2')
+    if USE_MULTI_PROCESS:
+        DOTA2COCO_ANNO_MULTI(dst_train_folder, os.path.join(dst_train_folder, f'DOTA{filename}_trainval{subsize}.json'), class_name, difficult='2', processor=num_process)
+    else:
+        DOTA2COCO_ANNO(dst_train_folder, os.path.join(dst_train_folder, f'DOTA{filename}_trainval{subsize}.json'), class_name, difficult='2')
     print('Processing test data.')
-    DOTA2COCO_ONLYIMG(dst_test_folder, os.path.join(dst_test_folder, f'DOTA{filename}_test{subsize}.json'), class_name)
+    if USE_MULTI_PROCESS:
+        DOTA2COCO_ONLYIMG_MULTI(dst_test_folder, os.path.join(dst_test_folder, f'DOTA{filename}_test{subsize}.json'), class_name)
+    else:
+        DOTA2COCO_ONLYIMG(dst_test_folder, os.path.join(dst_test_folder, f'DOTA{filename}_test{subsize}.json'), class_name)
     print('All done.')
 
 
@@ -184,9 +192,16 @@ def prepare_multi_scale(srcpath, dstpath, subsize=1024, gap=200, data_type='dota
     else:
         raise ValueError
     print('Processing train data.')
-    DOTA2COCO_ANNO(dst_train_folder, os.path.join(dst_train_folder, f'DOTA{filename}_trainval{subsize}_ms.json'), class_name, difficult=-1)
+    if USE_MULTI_PROCESS:
+        DOTA2COCO_ANNO_MULTI(dst_train_folder, os.path.join(dst_train_folder, f'DOTA{filename}_trainval{subsize}_ms.json'),
+                             class_name, difficult='2', processor=num_process)
+    else:
+        DOTA2COCO_ANNO(dst_train_folder, os.path.join(dst_train_folder, f'DOTA{filename}_trainval{subsize}_ms.json'), class_name, difficult='2')
     print('Processing test data.')
-    DOTA2COCO_ONLYIMG(dst_test_folder, os.path.join(dst_test_folder, f'DOTA{filename}_test{subsize}_ms.json'), class_name)
+    if USE_MULTI_PROCESS:
+        DOTA2COCO_ONLYIMG_MULTI(dst_test_folder, os.path.join(dst_test_folder, f'DOTA{filename}_test{subsize}_ms.json'), class_name)
+    else:
+        DOTA2COCO_ONLYIMG(dst_test_folder, os.path.join(dst_test_folder, f'DOTA{filename}_test{subsize}_ms.json'), class_name)
     print('All done.')
 
 
@@ -200,6 +215,8 @@ if __name__ == '__main__':
     num_process = args.processor
     drop_thre = args.drop_thre
     type = args.type
+    if USE_MULTI_PROCESS:
+        print('Multi process mode: enable.')
     if args.scales:
         prepare_multi_scale(srcpath, dstpath, subsize, gap, type, drop_thre, num_process, args.scales)
     else:

@@ -17,7 +17,8 @@ By applying CUDA expansion, the memory utilization is improved and a lot of unne
 We also try to train FCOSR-M on 2080ti (4 images per device), which can basically fill memory of graphics card.
 
 FCOSR TensorRT inference code is available at: <https://github.com/lzh420202/FCOSR_TensorRT_Inference><br>
-祝大家12月26日,"圣诞快乐".
+
+We add a multiprocess version DOTA2COCO into DOTA_devkit package, you could switch `USE_MULTI_PROCESS` to control the function in `DOTA2COCO_multi_process.py`<br>
 
 ## Install
 
