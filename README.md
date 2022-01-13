@@ -18,7 +18,7 @@ We also try to train FCOSR-M on 2080ti (4 images per device), which can basicall
 
 FCOSR TensorRT inference code is available at: <https://github.com/lzh420202/FCOSR_TensorRT_Inference><br>
 
-We add a multiprocess version DOTA2COCO into DOTA_devkit package, you could switch `USE_MULTI_PROCESS` to control the function in `DOTA2COCO_multi_process.py`<br>
+We add a multiprocess version DOTA2COCO into DOTA_devkit package, you could switch `USE_MULTI_PROCESS` to control the function in `prepare_dota.py`<br>
 
 ## Install
 
