@@ -16,7 +16,7 @@ The program could not work effectively when we migrate it to cuda 11 (only suppo
 By applying CUDA expansion, the memory utilization is improved and a lot of unnecessary calculations are reduced.
 We also try to train FCOSR-M on 2080ti (4 images per device), which can basically fill memory of graphics card.
 
-FCOSR TensorRT inference code is available at: <https://github.com/lzh420202/FCOSR_TensorRT_Inference><br>
+FCOSR TensorRT inference code is available at: <https://github.com/lzh420202/TensorRT_Inference><br>
 
 We add a multiprocess version DOTA2COCO into DOTA_devkit package, you could switch `USE_MULTI_PROCESS` to control the function in `prepare_dota.py`<br>
 
@@ -94,7 +94,7 @@ Details (Test device: nvidia RTX 2080ti)
 
 ### Lightweight FCOSR test result on Jetson AGX Xavier (DOTA 1.0 single-scale).
 
-A part of Dota1.0 dataset (whole image mode) [**Code**](https://github.com/lzh420202/FCOSR_TensorRT_Inference)
+A part of Dota1.0 dataset (whole image mode) [**Code**](https://github.com/lzh420202/TensorRT_Inference)
 
 |name|size|patch size|gap|patches|det objects|det time(s)|
 |-|-|-|-|-|-|-|

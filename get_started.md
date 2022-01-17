@@ -130,4 +130,4 @@ python tools/deployment/pytorch2onnx.py config_file checkpoint_file --output-fil
 
 onnx -> tensorrt ([onnx-tensorrt 8.0](https://github.com/onnx/onnx-tensorrt/tree/release/8.0))
 
-The TensorRT inference implement can be found in my other [repository](https://github.com/lzh420202/FCOSR_TensorRT_Inference)
+The TensorRT inference implement can be found in my other [repository](https://github.com/lzh420202/TensorRT_Inference)
