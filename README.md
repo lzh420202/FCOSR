@@ -40,12 +40,16 @@ Details (Test device: nvidia RTX 2080ti)
 |Methods|backbone|FPS|mAP(%)|
 |-|-|-|-|
 |[ReDet](https://github.com/csuhan/ReDet)|ReR50|8.8|76.25|
+|[S<sup>2</sup>ANet](https://github.com/csuhan/s2anet)|Mobilenet v2|18.9|67.46|
 |[S<sup>2</sup>ANet](https://github.com/csuhan/s2anet)|R50|14.4|74.14|
 |[R<sup>3</sup>Det](https://github.com/SJTU-Thinklab-Det/r3det-on-mmdetection)|R50|9.2|71.9|
+|[Oriented-RCNN](https://github.com/jbwang1997/OBBDetection)|Mobilenet v2|21.2|72.72|
 |[Oriented-RCNN](https://github.com/jbwang1997/OBBDetection)|R50|13.8|75.87|
 |[Oriented-RCNN](https://github.com/jbwang1997/OBBDetection)|R101|11.3|76.28|
+|[RetinaNet-O](https://github.com/jbwang1997/OBBDetection)|Mobilenet v2|22.4|67.95|
 |[RetinaNet-O](https://github.com/jbwang1997/OBBDetection)|R50|16.5|72.7|
 |[RetinaNet-O](https://github.com/jbwang1997/OBBDetection)|R101|13.3|73.7|
+|[Faster-RCNN-O](https://github.com/jbwang1997/OBBDetection)|Mobilenet v2|23|67.41|
 |[Faster-RCNN-O](https://github.com/jbwang1997/OBBDetection)|R50|14.4|72.29|
 |[Faster-RCNN-O](https://github.com/jbwang1997/OBBDetection)|R101|11.4|72.65|
 |FCOSR-S|Mobilenet v2|23.7|74.05|
