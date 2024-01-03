@@ -1,7 +1,10 @@
 # FCOSR: A Simple Anchor-free Rotated Detector for Aerial Object Detection
 
 > **[FCOSR: A Simple Anchor-free Rotated Detector for Aerial Object Detection](#)**<br>
-> arXiv preprint ([arXiv:2111.10780](https://arxiv.org/abs/2111.10780)).
+> arXiv preprint ([arXiv](https://arxiv.org/abs/2111.10780)).
+> Article version [RS](https://www.mdpi.com/2072-4292/15/23/5499)
+
+
 
 This implement is modified from [mmdetection](https://github.com/open-mmlab/mmdetection). 
 We also refer to the codes of 
@@ -136,3 +139,19 @@ A part of Dota1.0 dataset (whole image mode) [**Code**](https://github.com/lzh42
 |P2645.png|4605×3442|1024|200|24|357|1.42|
 |P2762.png|8074×4359|1024|200|60|127|3.23|
 |P2795.png|4495×3981|1024|200|30|65|1.64|
+
+## Citation
+```latex
+@Article{rs15235499,
+AUTHOR = {Li, Zhonghua and Hou, Biao and Wu, Zitong and Ren, Bo and Yang, Chen},
+TITLE = {FCOSR: A Simple Anchor-Free Rotated Detector for Aerial Object Detection},
+JOURNAL = {Remote Sensing},
+VOLUME = {15},
+YEAR = {2023},
+NUMBER = {23},
+ARTICLE-NUMBER = {5499},
+URL = {https://www.mdpi.com/2072-4292/15/23/5499},
+ISSN = {2072-4292},
+DOI = {10.3390/rs15235499}
+}
+```
